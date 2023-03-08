@@ -1,0 +1,23 @@
+{
+    "inbounds": [
+        {
+            "port": 1080,
+            "protocol": "socks",
+            "settings": {
+                "udp": true
+            }
+        },
+        {
+            "port": 8080,
+            "protocol": "http"
+        }
+    ],
+    "log": {
+        "loglevel": "info"
+    },
+    "outbounds": [
+        {
+            "protocol": "freedom"
+        }
+    ]
+}

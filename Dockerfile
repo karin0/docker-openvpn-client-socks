@@ -8,17 +8,14 @@
 
 FROM alpine
 
-COPY sockd.sh /usr/local/bin/
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
+    && apk add --update-cache openvpn openresolv openrc v2ray \
+    && rm -rf /var/cache/apk
 
-RUN true \
-    && apk add --update-cache dante-server openvpn bash openresolv openrc \
-    && rm -rf /var/cache/apk/* \
-    && chmod a+x /usr/local/bin/sockd.sh \
-    && true
+COPY v2ray.json /v2ray.json
 
-COPY sockd.conf /etc/
-
+EXPOSE 1080 8080
 ENTRYPOINT [ \
-    "/bin/bash", "-c", \
-    "cd /etc/openvpn && /usr/sbin/openvpn --config *.conf --script-security 2 --up /usr/local/bin/sockd.sh" \
-    ]
+    "/bin/sh", "-c", \
+    "set -e; cd /etc/openvpn; /usr/sbin/openvpn --config *.conf & v2ray run -c /v2ray.json; wait" \
+]
